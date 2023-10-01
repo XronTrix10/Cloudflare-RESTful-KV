@@ -1,6 +1,6 @@
 // copyright 2023 © Xron Trix | https://github.com/Xrontrix10
 
-import { notFound } from './handler/res-handler'
+import { notAllowed } from './handler/res-handler'
 import { respondRequest } from './handler/req-handler'
 
 addEventListener('fetch', event => {
@@ -37,6 +37,6 @@ async function handleRequest(request) {
   }
   
   else {
-    return notFound();
+    return notAllowed();
   }
 }
