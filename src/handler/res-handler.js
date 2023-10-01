@@ -12,6 +12,10 @@ export function badRequest() {
     return new Response('Bad Request', { status: 400 });
 };
 
+export function notAllowed() {
+    return new Response('Method not Allowed', { status: 405 });
+};
+
 export function badEntity() {
     return new Response('Unprocessable Entity', { status: 422 });
 };
