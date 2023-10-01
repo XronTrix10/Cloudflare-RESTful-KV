@@ -28,6 +28,10 @@ export function serverRoot() {
     return new Response('Server is up and running!', { status: 200 });
 };
 
+export function noContent() {
+    return new Response(null, { status: 204 });
+};
+
 export function returnSuccess() {
     return new Response('Request Permitted!', { status: 200 });
 };

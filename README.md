@@ -29,8 +29,7 @@
    <pre>
       curl -x POST https://backend.workers.dev/faculty
          -H 'Authorization: AUTH_TOKEN'  
-         -d '{name: "Xron Trix"}'
-   </pre>
+         -d '{name: "Xron Trix"}'</pre>
 
 </details>
 
@@ -41,6 +40,7 @@
 
    <ul>
       <li><code>200</code> - OK</li>
+      <li><code>204</code> - No Content</li>
       <li><code>400</code> - Bad Request</li>
       <li><code>401</code> - Unauthorized</li>
       <li><code>404</code> - Not Found</li>
@@ -251,7 +251,7 @@
 
 ---
 
-<h2>Hosted Demo</h2>
+<h2>Hosted Demo 🐬</h2>
 
 Live @[Cloudflare](https://restapi-kv-demo.xrontrix.workers.dev)
 

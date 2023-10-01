@@ -1,13 +1,16 @@
 // copyright 2023 © Xron Trix | https://github.com/Xrontrix10
 
 import { authenticate } from "../auth/api-auth";
-import { returnJson, badEntity, badRequest, serverRoot, notFound, notAllowed } from "./res-handler";
+import { returnJson, badEntity, badRequest, serverRoot, notFound, notAllowed, noContent } from "./res-handler";
 import { getValueByKey, getValueByID, updateValueByKeyId, insertNewValueByKey, deleteValueById, deleteEntireKey } from "../database/kv-handler";
 
 export async function respondRequest(req, path, is_post, is_get, is_put, is_delete) {
 
-    if (is_get && path === '/') {
+    if (is_get && path === '/') { // Check If Server is Live
         return serverRoot();
+    }
+    if (is_get && (path === '/favicon.ico' || path === '/robots.txt')) { // In case any Stupid Opens in Browser ( Like Me :)
+        return noContent();
     }
 
     // ====== Check For Authorization ====== //
