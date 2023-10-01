@@ -87,60 +87,79 @@ export async function insertNewValueByKey(updatedData, key) {
   let dataArray = [];
   let dataIndex = -1;
   let dataId = uuidv4();
+  let newData = {}
 
   if (data) { // if data fetch was successful
     dataArray = JSON.parse(data);
-
-    dataIndex = dataArray.findIndex(
-      data_t => data_t.mobile === updatedData.mobile,
-    );
-
     // Check for unique DataId conflict
     do {
       dataId = uuidv4();
     } while (dataArray.some(every_data => every_data.id === dataId))
   }
   else {
-    console.log('Key is EMPTY !');
+    console.log('Key is EMPTY ! New will be created !');
   }
 
   // if key is faculty
   if (key === 'faculties' || key === 'members') {
 
-    if (dataIndex !== -1) {
-      return dataConflict();
-    }
+    if (data) { // Check for Duplicate existing data with same mobile
+      dataIndex = dataArray.findIndex(
+        data_t => data_t.mobile === updatedData.mobile,
+      );
 
-    // Define the expected fields and their default values
-    const expectedFields = ['name', 'role', 'image', 'mobile']
-    const defaultValues = {
-      name: '',
-      role: '',
-      image: '',
-      mobile: '',
+      if (dataIndex !== -1) {
+        return dataConflict();
+      }
     }
 
     // Create the new Data object using Data with missing fields filled in
-    const newData = {
-      id: dataId,
-      ...expectedFields.reduce((acc, field) => {
-        acc[field] = updatedData[field] || defaultValues[field]
-        return acc
-      }, {}),
-    }
-    // Push the new Data into the array
-    dataArray.push(newData)
 
-    try {
-      // Store the new data back in KV
-      await Cybertron.put(key, JSON.stringify(dataArray));
-      return returnJson(JSON.stringify({ collection: key, id: dataId, success: true }));
-    } 
-    
-    catch (error) {
-      console.error(error);
-      return serverError();
+    newData = {
+      id: dataId,
+      name: updatedData.name,
+      role: updatedData.role,
+      image: updatedData.image,
+      mobile: updatedData.mobile,
     }
+
+    if (key === 'members') {
+      newData.roll = updatedData.roll; // Add roll if key is members
+    }
+  }
+
+  else if (key === 'events') {
+
+    if (data) { // Check for Duplicate existing event with same page
+      dataIndex = dataArray.findIndex(
+        data_t => data_t.page === updatedData.page,
+      );
+
+      if (dataIndex !== -1) {
+        return dataConflict();
+      }
+    }
+
+    newData = {
+      id: dataId,
+      title: updatedData.title,
+      page: updatedData.page,
+      image: updatedData.image
+    }
+  }
+
+  // Push the new Data into the array
+  dataArray.push(newData)
+
+  try {
+    // Store the new data back in KV
+    await Cybertron.put(key, JSON.stringify(dataArray));
+    return returnJson(JSON.stringify({ collection: key, id: dataId, success: true }));
+  }
+
+  catch (error) {
+    console.error(error);
+    return serverError();
   }
 }
 
@@ -160,7 +179,7 @@ export async function deleteValueById(id, key) {
   dataArray.splice(dataIndex, 1)
 
   // Store the updated data back in KV without the deleted faculty
-  await Cybertron.put('faculties', JSON.stringify(dataArray))
+  await Cybertron.put(key, JSON.stringify(dataArray))
 
   return returnSuccess(); // Return true to indicate successful deletion
 }
