@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "version": "0.2.0",
+  "name": "cybertron-backend",
+  "description": "A backend RESTful API for cybertron.vercel.app",
+  "scripts": {
+    "build": "worktop build index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Xron Trix",
+  "license": "MIT-0",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  }
+}

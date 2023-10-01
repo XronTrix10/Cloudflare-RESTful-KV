@@ -1,0 +1,19 @@
+# copyright 2023 © Xron Trix | https://github.com/Xrontrix10
+
+/target
+/dist
+**/*.rs.bk
+Cargo.lock
+bin/
+pkg/
+wasm-pack.log
+worker/
+node_modules/
+.cargo-ok
+.env.local
+.DS_Store
+.dev*
+.wrangler/
+/build
+
+wrangler.toml
