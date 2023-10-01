@@ -105,7 +105,7 @@ export async function insertNewValueByKey(updatedData, key) {
   }
 
   // if key is faculty
-  if (key === 'faculties') {
+  if (key === 'faculties' || key === 'members') {
 
     if (dataIndex !== -1) {
       return dataConflict();
@@ -133,8 +133,8 @@ export async function insertNewValueByKey(updatedData, key) {
 
     try {
       // Store the new data back in KV
-      await Cybertron.put('faculties', JSON.stringify(dataArray));
-      return returnJson(JSON.stringify({ id: dataId, success: true }));
+      await Cybertron.put(key, JSON.stringify(dataArray));
+      return returnJson(JSON.stringify({ collection: key, id: dataId, success: true }));
     } 
     
     catch (error) {

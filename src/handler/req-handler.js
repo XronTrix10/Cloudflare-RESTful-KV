@@ -1,8 +1,8 @@
 // copyright 2023 © Xron Trix | https://github.com/Xrontrix10
 
 import { authenticate } from "../auth/api-auth";
+import { returnJson, badEntity, badRequest, serverRoot, notFound, notAllowed } from "./res-handler";
 import { getValueByKey, getValueByID, updateValueByKeyId, insertNewValueByKey, deleteValueById, deleteEntireKey } from "../database/kv-handler";
-import { returnJson, serverError, badEntity, badRequest, serverRoot, notFound } from "./res-handler";
 
 export async function respondRequest(req, path, is_post, is_get, is_put, is_delete) {
 
@@ -18,73 +18,16 @@ export async function respondRequest(req, path, is_post, is_get, is_put, is_dele
 
     // ====== If authorized, then continue the request ====== //
 
-    // For all get requests
-    if (is_get) {
+    if (path === '/faculty' || path === '/member') {
 
-        if (path === '/faculty') { // To get all faculty members details
-            const faculties = await getValueByKey('faculties');
+        const key = (path === '/faculty') ? "faculties" : "members";
 
-            if (faculties) {
-                return returnJson(faculties);
-            }
-            return notFound();
-        }
+        if (is_post) {
 
-        else if (path.startsWith('/faculty/')) { // To get single faculty member details
-
-            // Get the name from the URL path
-            const facultyID = path.split('/')[2]
-
-            const response = await getValueByID(facultyID, 'faculties');
-            return response;
-        }
-
-        else {
-            return notFound();
-        }
-
-    }
-
-    // For all put requests
-    else if (is_put) {
-
-        if (path.startsWith('/faculty/')) {
-
-            const facultyID = path.split('/')[2]
-            let facultyData;
-
+            let reqData;
             try {
-                facultyData = await req.json()
-                const { name, role, image, mobile } = facultyData;
-
-                if (!name && !role && !image && !mobile) { // If No field is provided
-                    return badEntity();
-                }
-            } catch (e) {
-                console.log(e);
-                return badEntity();
-            }
-
-            // Update faculty data in the KV store
-            const response = await updateValueByKeyId(facultyID, facultyData, 'faculties')
-            return response;
-        }
-
-        else {
-            return badRequest();
-        }
-    }
-
-    // For all post requests
-    else if (is_post) {
-
-        if (path === '/faculty') {
-
-            let facultyData;
-
-            try {
-                facultyData = await req.json()
-                const { name, role, image, mobile } = facultyData;
+                reqData = await req.json()
+                const { name, role, image, mobile } = reqData;
 
                 if (!name || !role || !image || !mobile) { // If any field is missing
                     return badEntity();
@@ -93,31 +36,71 @@ export async function respondRequest(req, path, is_post, is_get, is_put, is_dele
                 console.log(e);
                 return badEntity();
             }
+            // Insert new data in the KV store
+            const response = await insertNewValueByKey(reqData, key);
+            return response;
+        }
 
-            // Insert new faculty data in the KV store
-            const response = await insertNewValueByKey(facultyData, 'faculties');
+        else if (is_get) {
+
+            const details = await getValueByKey(key);
+            if (details) { return returnJson(details); }
+            return notFound();
+        }
+
+        else if (is_delete) {
+
+            const response = await deleteEntireKey(key);
             return response;
         }
 
         else {
-            return badRequest();
+            return notAllowed();
         }
     }
 
-    // For all delete requests
-    else if (is_delete) {
+    else if (path.startsWith('/faculty/') || path.startsWith('/member/')) {
 
-        if (path === '/faculty') {
-            const response = await deleteEntireKey('faculties');
+        const key = (path.startsWith('/faculty/')) ? "faculties" : "members";
+        const dataID = path.split('/')[2];  // Get the id from the URL path
+
+        if (is_get) {
+
+            const response = await getValueByID(dataID, key);
             return response;
         }
 
-        else if (path.startsWith('/faculty/')) {
-            const facultyID = path.split('/')[2]
-            const response = await deleteValueById(facultyID, 'faculties');
+        else if (is_put) {
+
+            let newData;
+            try {
+                newData = await req.json()
+                const { name, role, image, mobile } = newData;
+
+                if (!name && !role && !image && !mobile) { // If No field is provided
+                    return badEntity();
+                }
+            } catch (e) {
+                console.log(e);
+                return badEntity();
+            }
+            // Update data in the KV store
+            const response = await updateValueByKeyId(dataID, newData, key)
             return response;
+        }
+
+        else if (is_delete) {
+
+            const response = await deleteValueById(dataID, key);
+            return response;
+        }
+
+        else {
+            return notAllowed();
         }
     }
 
-    return notFound();
+    else {
+        return badRequest();
+    }
 }
