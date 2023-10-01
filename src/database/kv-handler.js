@@ -3,9 +3,11 @@
 import { v4 as uuidv4 } from 'uuid' // Import the UUID library
 import { returnJson, notFound, serverError, returnSuccess, dataConflict } from '../handler/res-handler';
 
+const DATABASE = DemoRestKV;
+
 export async function getValueByKey(key) {
   try {
-    const all_data = await Cybertron.get(key);
+    const all_data = await DATABASE.get(key);
     return all_data;
   } catch (e) {
     console.log(e);
@@ -70,7 +72,7 @@ export async function updateValueByKeyId(id, updatedData, key) {
 
   // Store the updated data back in KV
   try {
-    await Cybertron.put(key, JSON.stringify(dataArray));
+    await DATABASE.put(key, JSON.stringify(dataArray));
   }
   catch (e) {
     console.log(e);
@@ -153,7 +155,7 @@ export async function insertNewValueByKey(updatedData, key) {
 
   try {
     // Store the new data back in KV
-    await Cybertron.put(key, JSON.stringify(dataArray));
+    await DATABASE.put(key, JSON.stringify(dataArray));
     return returnJson(JSON.stringify({ collection: key, id: dataId, success: true }));
   }
 
@@ -179,7 +181,7 @@ export async function deleteValueById(id, key) {
   dataArray.splice(dataIndex, 1)
 
   // Store the updated data back in KV without the deleted faculty
-  await Cybertron.put(key, JSON.stringify(dataArray))
+  await DATABASE.put(key, JSON.stringify(dataArray))
 
   return returnSuccess(); // Return true to indicate successful deletion
 }
@@ -187,7 +189,7 @@ export async function deleteValueById(id, key) {
 export async function deleteEntireKey(key) {
 
   try {
-    await Cybertron.delete(key);
+    await DATABASE.delete(key);
     return returnSuccess(); // Return true to indicate successful deletion
   }
 
