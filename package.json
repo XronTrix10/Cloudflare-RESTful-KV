@@ -4,6 +4,7 @@
   "name": "cybertron-backend",
   "description": "A backend RESTful API for cybertron.vercel.app",
   "scripts": {
+    "dev": "wrangler dev ./src/index.js",
     "build": "worktop build index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write '**/*.{js,css,json,md}'"
