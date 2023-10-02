@@ -218,17 +218,17 @@
 
    - Create a KV Namespace in Cloudflare
 
-      <pre>wrangler kv:namespace create DemoRestKV</pre>
+      <pre>wrangler kv:namespace create YOUR_NAMESPACE</pre>
       
-      <p><strong>NOTE:</strong> If You Choose your own desired Database Name instead of <code>DemoRestKV</code> , Then Also Replace it from src/database/kv-handler.js  line:6.</p>
+      <p><strong>NOTE:</strong> Replace your own desired Database Name with <code>YOUR_NAMESPACE</code></p>
       
       <p>On Hitting Enter, an ID of the created namespace will be returned.</p>
 
    - Put Binding in `wrangler.toml` file
 
-      - Replace <YOUR_KV_NAMESPACE> with Your Chosen Database Name
       - Replace <NAMESPACE_ID> with the ID you got on namespace Creation
 
+      <p><strong>NOTE:</strong> ❌ Don't Edit the Binding Name <code>binding = "DATABASE"</code></p>
 
 </details>
 

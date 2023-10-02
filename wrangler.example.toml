@@ -4,5 +4,5 @@ workers_dev = true
 compatibility_date = "2023-10-01"
 
 kv_namespaces = [
-   { binding = "<YOUR_KV_NAMESPACE>", id = "<NAMESPACE_ID>" }
+   { binding = "DATABASE", id = "<NAMESPACE_ID>" }
 ]

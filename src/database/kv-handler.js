@@ -3,7 +3,6 @@
 import { v4 as uuidv4 } from 'uuid' // Import the UUID library
 import { returnJson, notFound, serverError, returnSuccess, dataConflict } from '../handler/res-handler';
 
-const DATABASE = DemoRestKV;
 
 export async function getValueByKey(key) {
   try {
